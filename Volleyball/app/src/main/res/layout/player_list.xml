@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
@@ -11,9 +13,83 @@
 
     <ListView
         android:id="@+id/playerListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/textView"/>
+        android:layout_width="345dp"
+        android:layout_height="470dp"
+        android:layout_below="@+id/textView"
+        android:layout_marginTop="12dp" />
+
+    <EditText
+        android:id="@+id/addPlayerEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/viewAllPlayers"
+        android:ems="10"
+        android:hint="Enter new player"
+        android:inputType="textPersonName"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#0099FF" />
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+
+        android:layout_marginLeft="0dp"
+        android:layout_toRightOf="@id/viewAllPlayers"
+        android:layout_alignParentBottom="true"
+        android:text="+" />
+
+    <CheckBox
+        android:id="@+id/isSetterCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_above="@id/submit"
+        android:layout_toRightOf="@id/addPlayerEditText"
+        android:checked="false"
+        android:clickable="true"
+        android:focusable="auto"
+
+        android:text="setter?" />
+
+    <Button
+        android:id="@+id/viewAllPlayers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+
+        android:text="View All Players" />
+
+    <Button
+        android:id="@+id/updatePlayers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/submit"
+        android:layout_alignParentBottom="true"
+        android:text="Edit" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <EditText
+        android:id="@+id/playersEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/addPlayerEditText"
+        android:ems="10"
+        android:hint="Edit by Id"
+        android:inputType="textPersonName" />
+
+    <Button
+        android:id="@+id/deletePlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/updatePlayers"
+        android:layout_alignParentBottom="true"
+        android:text="X" />
 
 
 </RelativeLayout>
