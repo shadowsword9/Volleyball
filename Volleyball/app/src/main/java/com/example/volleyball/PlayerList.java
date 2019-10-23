@@ -7,6 +7,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerList extends AppCompatActivity {
     DatabaseHelper myDB;
@@ -25,10 +28,15 @@ public class PlayerList extends AppCompatActivity {
     Button updateBtn;
     Button deleteBtn;
     EditText updateEditText;
+    ListView listView;
 
 
-    private ArrayList<Player> playersArrayList;
+    ArrayList<String> playersArrayList;
+    ArrayAdapter adapter;
+
+
     private static final String TAG = "NAME";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,44 +53,27 @@ public class PlayerList extends AppCompatActivity {
         updateBtn = findViewById(R.id.updatePlayers);
         updateEditText = findViewById(R.id.playersEditText);
         deleteBtn = findViewById(R.id.deletePlayer);
-
+        playersArrayList = new ArrayList<>();
+        listView = findViewById(R.id.playerListView);
         //call addData
         AddData();
         viewAll();
         updateData();
         deleteData();
+        viewAllList();
 
-
-        playersArrayList = new ArrayList<>();
-//        playersArrayList.add(new Player(1,"Steven","yes"));
-//        playersArrayList.add(new Player(2,"Bob","no"));
-//        playersArrayList.add(new Player(3,"James","no"));
-
-
-
-        for (int i = 0; i< playersArrayList.size(); i++){
-
-            Log.d(TAG, "onCreate: "+ playersArrayList.get(i).getName());
-        }
-
-        PlayersAdapter adapter = new PlayersAdapter(this, playersArrayList);
-        // Attach the adapter to a ListView
-
-        ListView listView = (ListView) findViewById(R.id.playerListView);
-        listView.setAdapter(adapter);
-
-        // Add item to adapter
-        Player newPlayer = new Player(4,"Link", "yes");
-        Player newPlayer1 = new Player(5,"Steven", "no");
-        Player newPlayer2 = new Player(6,"Pikachu", "no");
-        adapter.add(newPlayer);
-        adapter.add(newPlayer1);
-        adapter.add(newPlayer2);
-
-
+    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            String text = listView.getItemAtPosition(position).toString();
+            Toast.makeText(PlayerList.this, ""+text, Toast.LENGTH_LONG).show();
 
         }
-    public void AddData(){
+    });
+
+    }
+
+    public void AddData() {
 
         subBtn.setOnClickListener(
                 new View.OnClickListener() {
@@ -91,11 +82,11 @@ public class PlayerList extends AppCompatActivity {
 
 
                         boolean isInserted = myDB.insertData(editNewPlayer.getText().toString(), newSetterCheckBox.isChecked());
-
+                        editNewPlayer.setText(null); //resets text input to blank
                         if (isInserted == true)
-                            Toast.makeText(PlayerList.this,"Data Inserted",Toast.LENGTH_LONG).show();
+                            Toast.makeText(PlayerList.this, "Data Inserted", Toast.LENGTH_LONG).show();
                         else
-                            Toast.makeText(PlayerList.this,"DATA ERROR. NOT INSERTED",Toast.LENGTH_LONG).show();
+                            Toast.makeText(PlayerList.this, "DATA ERROR. NOT INSERTED", Toast.LENGTH_LONG).show();
 
 
                     }
@@ -103,28 +94,27 @@ public class PlayerList extends AppCompatActivity {
         );
 
 
-
     }
 
-    public void viewAll(){
+    public void viewAll() {
         viewAllBtn.setOnClickListener((View v) -> {
             Cursor result = myDB.getAllData();
-                if(result.getCount() == 0) { //result count
-                    //show msg
-                    showMessage("Error,", "NO DATA!");
-                    return;
-                }
-                StringBuffer buffer = new StringBuffer();
-                while (result.moveToNext()){
-                    buffer.append(result.getString(0) + ". " +result.getString(1)+ "\n");
+            if (result.getCount() == 0) { //result count
+                //show msg
+                showMessage("Error,", "NO DATA!");
+                return;
+            }
+            StringBuffer buffer = new StringBuffer();
+            while (result.moveToNext()) {
+                buffer.append(result.getString(0) + ". " + result.getString(1) + "\n");
 
-                }
-                showMessage("List of Players", buffer.toString());
-                //show all data
+            }
+            showMessage("List of Players", buffer.toString());
+            //show all data
         });
     }
 
-    public void showMessage(String title, String message){
+    public void showMessage(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle(title);
@@ -132,38 +122,52 @@ public class PlayerList extends AppCompatActivity {
         builder.show();
     }
 
-    public void updateData(){
+    public void updateData() {
         updateBtn.setOnClickListener((View v) -> {
             boolean isUpdate = myDB.updateData(updateEditText.getText().toString(), editNewPlayer.getText().toString(), newSetterCheckBox.getText().toString());
-            if  (isUpdate == true) {
+            if (isUpdate == true) {
                 Toast.makeText(PlayerList.this, "Data Updated", Toast.LENGTH_LONG).show();
-            }else{
-                Toast.makeText(PlayerList.this,"DATA ERROR. NOT Updated",Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(PlayerList.this, "DATA ERROR. NOT Updated", Toast.LENGTH_LONG).show();
 
 
             }
         });
 
     }
-    public void deleteData(){
+
+    public void deleteData() {
         deleteBtn.setOnClickListener((View v) -> {
             Integer deletedRows = myDB.deleteData(updateEditText.getText().toString());
-            if (deletedRows > 0){
+            if (deletedRows > 0) {
                 Toast.makeText(PlayerList.this, "Data Deleted", Toast.LENGTH_LONG).show();
-            }else{
-            Toast.makeText(PlayerList.this,"DATA ERROR. NOT DELETED",Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(PlayerList.this, "DATA ERROR. NOT DELETED", Toast.LENGTH_LONG).show();
 
 
-        }
-
+            }
 
 
         });
 
     }
+
+    public void viewAllList() {
+
+        Cursor result = myDB.getAllDataViewList();
+        if (result.getCount() == 0) { //result count
+            //show msg
+            showMessage("Error,", "NO DATA!");
+            return;
+        } else {
+            while (result.moveToNext()) {
+                playersArrayList.add(result.getString(1));
+            }
+            adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, playersArrayList);
+            listView.setAdapter(adapter);
+        }
     }
-
-
+}
 
 
 
