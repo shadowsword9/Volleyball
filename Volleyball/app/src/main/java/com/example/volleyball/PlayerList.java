@@ -55,12 +55,16 @@ public class PlayerList extends AppCompatActivity {
         deleteBtn = findViewById(R.id.deletePlayer);
         playersArrayList = new ArrayList<>();
         listView = findViewById(R.id.playerListView);
+
         //call addData
         AddData();
         viewAll();
         updateData();
         deleteData();
         viewAllList();
+
+
+
 
     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         @Override
@@ -163,10 +167,13 @@ public class PlayerList extends AppCompatActivity {
             while (result.moveToNext()) {
                 playersArrayList.add(result.getString(1));
             }
-            adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, playersArrayList);
+            adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, playersArrayList);
+            listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
             listView.setAdapter(adapter);
         }
     }
+
+    
 }
 
 
